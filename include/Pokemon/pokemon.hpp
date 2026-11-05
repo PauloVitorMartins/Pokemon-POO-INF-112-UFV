@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath> 
 #include <algorithm>
+
+#include "golpe.hpp"
+
 using std::string;
 
 class Pokemon {
@@ -29,8 +32,8 @@ class Pokemon {
         int getDefesa();
         string getTipo();
         bool derrotado();
-        //Golpe* getGolpe(int indice); -> implementar a classe golpe
-        //void definirGolpe(int indice, Golpe* golpe); -> implementar a classe golpe
+        Golpe* getGolpe(int indice); 
+        void definirGolpe(int indice, Golpe* golpe);
         int perderVida(int quantidade);
         int curar(int quantidade);
         void reduzirAtaque(int quantidade);
