@@ -33,7 +33,7 @@
 
 Este projeto é um simulador de batalhas Pokémon focado na aplicação prática de **Programação Orientada a Objetos (POO)** e **Tipos Abstratos de Dados (TADs)**. 
 
-A interface gráfica do simulador foi fornecida previamente pelo professor Julio Reis. O núcleo do trabalho consistiu em projetar, implementar e integrar o *backend* do jogo (a lógica de negócios). Isso exigiu a construção de um ecossistema de classes robusto para gerenciar Pokémons, seus atributos, bibliotecas de tipos, cálculos de dano e a mecânica de golpes, fazendo com que a interface gráfica se comunicasse perfeitamente com os objetos instanciados.
+A interface gráfica do simulador foi fornecida previamente pelo professor Julio Reis. O núcleo do trabalho consistiu em projetar, implementar e integrar o *backend* do jogo (a lógica de negócios). Isso exigiu a construção de um ecossistema de classes robusto para gerenciar Pokémons, seus atributos, bibliotecas de tipos, cálculos de dano e a mecânica de golpes, fazendo com que a interface gráfica se comunicasse perfeitamente com os objetos instanciados. Também tomei a liberdade de alterar a interface fornecida pelo professor, adicionei um script que baixa os assets dos pokemons na ordem e sequencia que os implementei no arquivo de texto, o código original contava com 11 pokemons, o meu atual contém 90 pokemons, todos os tipos: Planta, Água, Fogo e Elétrico da primeira geração tão amada!
 
 <br>
 <div align="center">
