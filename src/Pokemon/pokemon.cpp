@@ -92,4 +92,22 @@ void Pokemon::reduzirAtaque(int quantity) {
     else reducaoProximoAtaque = quantity;
 }
 
+int Pokemon::consumirReducaoAtaque() {
+    int reducaoPendente = reducaoProximoAtaque;
+    reducaoProximoAtaque = 0;
+    return reducaoPendente;
+}
+
+bool Pokemon::fortalecer() {
+    if (derrotado() || fortalecido == true) {
+        return false;
+    } else return true;
+}
+
+double Pokemon::consumirFortalecimento() {
+    if (fortalecido == true) {
+        return 1.1;
+    } else return 1.0;
+}
+
 
