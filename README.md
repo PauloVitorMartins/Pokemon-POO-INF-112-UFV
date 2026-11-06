@@ -92,9 +92,7 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
 ### 🎬 Vídeo de Demonstração
 <!-- Substitua o link da imagem e do href pelo seu vídeo ou GIF de gameplay -->
 <div align="center">
-  <a href="#">
-    https://github.com/user-attachments/assets/0d511267-acd2-4bcf-8ba5-0ac60776c442
-  </a>
+ https://github.com/user-attachments/assets/0d511267-acd2-4bcf-8ba5-0ac60776c442
 </div>
 
 <br>
