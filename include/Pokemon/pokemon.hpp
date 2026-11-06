@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath> 
 #include <algorithm>
+#include <string>
 
 #include "golpe.hpp"
 
@@ -20,10 +21,10 @@ class Pokemon {
         int defesa;
         int reducaoProximoAtaque;
         bool fortalecido;
-        //Golpe*[2] golpes; implementar a classe -> Golpe
+        Golpe* golpes[2];
     public:
         Pokemon (string nome, int idPokemon, int vida, int ataque, int defesa, string tipo);
-        virtual ~Pokemon() = 0;
+        virtual ~Pokemon();
         string getNome();
         int getIdPokemon();
         int getVida();
