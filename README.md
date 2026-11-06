@@ -93,7 +93,7 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
 <!-- Substitua o link da imagem e do href pelo seu vídeo ou GIF de gameplay -->
 <div align="center">
   <a href="#">
-    <img src="https://via.placeholder.com/600x338/222222/ffffff?text=Clique+aqui+para+inserir+o+seu+GIF+ou+Video" alt="Vídeo Gameplay" style="border-radius: 8px;">
+    <img src="https://github.com/PauloVitorMartins/Pokemon-POO-INF-112-UFV/blob/main/data/videos/recording_2026-11-06_18.12.51.mp4" alt="Vídeo Gameplay" style="border-radius: 8px;">
   </a>
 </div>
 
