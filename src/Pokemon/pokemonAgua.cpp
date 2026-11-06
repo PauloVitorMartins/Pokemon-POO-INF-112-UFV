@@ -1,5 +1,9 @@
 #include "pokemonAgua.hpp"
 
+PokemonAgua::PokemonAgua(string nome, int idPokemon, int vida, int ataque, int defesa) 
+    : Pokemon(nome, idPokemon, vida, ataque, defesa, "Agua") {
+}
+
 int PokemonAgua::calcularDanoRecebido (int damage, string type) {
     if (type == "fogo") {
         return std::max(1, (int)round (damage*0.5));
