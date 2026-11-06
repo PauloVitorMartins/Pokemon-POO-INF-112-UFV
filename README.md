@@ -100,9 +100,9 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
 <!-- Você pode adicionar quantas imagens quiser lado a lado ou em sequência substituindo os links abaixo -->
 <div align="center">
   <img src="https://github.com/PauloVitorMartins/Pokemon-POO-INF-112-UFV/blob/main/data/imagens/2026_11_06_21_52_25_screenshot.png" alt="Print 1" width="400" style="margin: 5px; border-radius: 5px;">
-  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+2" alt="Print 2" width="400" style="margin: 5px; border-radius: 5px;">
-  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+3" alt="Print 3" width="400" style="margin: 5px; border-radius: 5px;">
-  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+4" alt="Print 4" width="400" style="margin: 5px; border-radius: 5px;">
+  <img src="https://github.com/PauloVitorMartins/Pokemon-POO-INF-112-UFV/blob/main/data/imagens/2026_11_06_22_07_29_screenshot.png" alt="Print 2" width="400" style="margin: 5px; border-radius: 5px;">
+  <img src="https://github.com/PauloVitorMartins/Pokemon-POO-INF-112-UFV/blob/main/data/imagens/2026_11_06_21_53_15_screenshot.png" alt="Print 3" width="400" style="margin: 5px; border-radius: 5px;">
+  <img src="https://github.com/PauloVitorMartins/Pokemon-POO-INF-112-UFV/blob/main/data/imagens/2026_11_06_21_56_01_screenshot.png" alt="Print 4" width="400" style="margin: 5px; border-radius: 5px;">
 </div>
 
 <br>
