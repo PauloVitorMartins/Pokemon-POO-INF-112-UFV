@@ -1,3 +1,6 @@
+#ifndef GOLPE_DANO_HPP
+#define GOLPE_DANO_HPP
+
 #include "golpe.hpp"
 
 class GolpeDano:public Golpe {
@@ -8,3 +11,5 @@ class GolpeDano:public Golpe {
         GolpeDano(string nome, int poder);
         string aplicar(Pokemon& atacante, Pokemon& alvo);
 };
+
+#endif
