@@ -6,16 +6,16 @@
 
 class Golpe {
     private:
-    string nome;
+        string nome;
 
     public:
-    Golpe(string nome);
-    virtual ~Golpe() = 0;
-    string virtual getNome() = 0;
-    virtual string aplicar(Pokemon& atacante, Pokemon& alvo);
+        Golpe(string nome);
+        virtual ~Golpe();
+        string getNome();
+        virtual string aplicar(Pokemon& atacante, Pokemon& alvo) = 0;
 
     protected:
-    int virtual calcularDano(Pokemon& atacante, Pokemon& alvo, int poder) = 0;
+        int virtual calcularDano(Pokemon& atacante, Pokemon& alvo, int poder);
 
 };
 
