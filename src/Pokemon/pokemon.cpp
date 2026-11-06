@@ -5,6 +5,10 @@ Pokemon::Pokemon(string name, int id, int life, int attack, int defense, string 
     reducaoProximoAtaque = 0; fortalecido = false;
 };
 
+Pokemon::~Pokemon() {
+    delete golpes[0]; delete golpes[1];
+}
+
 //getters
 int Pokemon::getAtaque() {
     return ataque;
@@ -101,11 +105,12 @@ int Pokemon::consumirReducaoAtaque() {
 bool Pokemon::fortalecer() {
     if (derrotado() || fortalecido == true) {
         return false;
-    } else return true;
+    } else { fortalecido = true; return true; }
 }
 
 double Pokemon::consumirFortalecimento() {
     if (fortalecido == true) {
+        fortalecido = false;
         return 1.1;
     } else return 1.0;
 }
