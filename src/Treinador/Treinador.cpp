@@ -1,32 +1,34 @@
-// Treinador::Treinador(string nome, int pokemons[3]) {
-//     /* 
-//     ==============================================================
-//     Implementação fornecida: leitura do arquivo e criação da equipe
-//     Complete o construtor com a inicialização dos demais atributos
-//     ==============================================================
-//     */
+#include "treinador.hpp"
 
-//     for (int indice = 0; indice < 3; indice++) {
-//         equipe[indice] = nullptr;
-//     }
+Treinador::Treinador(string nome, int pokemons[3]) {
+    /* 
+    ==============================================================
+    Implementação fornecida: leitura do arquivo e criação da equipe
+    Complete o construtor com a inicialização dos demais atributos
+    ==============================================================
+    */
 
-//     std::ifstream arquivo("../pokemons.txt");
+    for (int indice = 0; indice < 3; indice++) {
+        equipe[indice] = nullptr;
+    }
 
-//     int id, vida, ataque, defesa;
-//     string tipo, nomePokemon;
-//     while (arquivo >> id >> tipo >> nomePokemon >> vida >> ataque >> defesa) {
-//         for (int indice = 0; indice < 3; indice++) {
-//             if (pokemons[indice] != id || equipe[indice] != nullptr) continue;
+    std::ifstream arquivo("../pokemons.txt");
 
-//             if (tipo == "fogo") {
-//                 equipe[indice] = new PokemonFogo(nomePokemon, id, vida, ataque, defesa);
-//             } else if (tipo == "agua") {
-//                 equipe[indice] = new PokemonAgua(nomePokemon, id, vida, ataque, defesa);
-//             } else if (tipo == "planta") {
-//                 equipe[indice] = new PokemonPlanta(nomePokemon, id, vida, ataque, defesa);
-//             } else if (tipo == "eletrico") {
-//                 equipe[indice] = new PokemonEletrico(nomePokemon, id, vida, ataque, defesa);
-//             }
-//         }
-//     }
-// }
+    int id, vida, ataque, defesa;
+    string tipo, nomePokemon;
+    while (arquivo >> id >> tipo >> nomePokemon >> vida >> ataque >> defesa) {
+        for (int indice = 0; indice < 3; indice++) {
+            if (pokemons[indice] != id || equipe[indice] != nullptr) continue;
+
+            if (tipo == "fogo") {
+                equipe[indice] = new PokemonFogo(nomePokemon, id, vida, ataque, defesa);
+            } else if (tipo == "agua") {
+                equipe[indice] = new PokemonAgua(nomePokemon, id, vida, ataque, defesa);
+            } else if (tipo == "planta") {
+                equipe[indice] = new PokemonPlanta(nomePokemon, id, vida, ataque, defesa);
+            } else if (tipo == "eletrico") {
+                equipe[indice] = new PokemonEletrico(nomePokemon, id, vida, ataque, defesa);
+            }
+        }
+    }
+}
