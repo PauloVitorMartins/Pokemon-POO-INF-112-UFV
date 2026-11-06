@@ -30,13 +30,13 @@ Treinador::Treinador(string name, int pokemons[3]) {
         for (int indice = 0; indice < 3; indice++) {
             if (pokemons[indice] != id || equipe[indice] != nullptr) continue;
 
-            if (tipo == "fogo") {
+            if (tipo == "Fogo") {
                 equipe[indice] = new PokemonFogo(nomePokemon, id, vida, ataque, defesa);
-            } else if (tipo == "agua") {
+            } else if (tipo == "Agua") {
                 equipe[indice] = new PokemonAgua(nomePokemon, id, vida, ataque, defesa);
-            } else if (tipo == "planta") {
+            } else if (tipo == "Planta") {
                 equipe[indice] = new PokemonPlanta(nomePokemon, id, vida, ataque, defesa);
-            } else if (tipo == "eletrico") {
+            } else if (tipo == "Eletrico") {
                 equipe[indice] = new PokemonEletrico(nomePokemon, id, vida, ataque, defesa);
             }
         }

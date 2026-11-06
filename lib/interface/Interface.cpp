@@ -1,5 +1,7 @@
 #include "Interface.hpp"
 #include "Pendencia.hpp"
+#include <fstream>
+#include <cctype>
 #include "raylib.h"
 #if MODELO_DISPONIVEL
 #include "Batalha.hpp"
@@ -19,27 +21,27 @@ class Item;
 
 namespace {
 using std::string;
-// Estados da interface: indicam qual tela será desenhada e receberá comandos.
 enum Tela { INICIO, TREINADORES, EQUIPE, COMBATE, VITORIA };
 const Color INK={27,42,58,255}, PAPER={243,240,219,255}, TEAL={37,105,111,255}, AMBAR={244,194,86,255};
-const char* nomes[]={"Charmander","Bulbasaur","Squirtle","Pikachu","Vulpix","Oddish","Psyduck","Voltorb","Ponyta","Growlithe","Bellsprout","Magnemite"};
-const int TOTAL_POKEMON=sizeof(nomes)/sizeof(nomes[0]);
-const char* tipos[]={"FOGO","PLANTA","ÁGUA","ELÉTRICO","FOGO","PLANTA","ÁGUA","ELÉTRICO","FOGO","FOGO","PLANTA","ELÉTRICO"};
-const int ataquesCatalogo[]={22,18,17,25,19,17,22,20,24,21,23,19};
-const int defesasCatalogo[]={14,18,22,12,17,19,16,18,13,16,14,23};
+std::vector<string> nomes;
+std::vector<string> tipos;
+std::vector<int> ataquesCatalogo;
+std::vector<int> defesasCatalogo;
+int TOTAL_POKEMON = 0;
 const char* treinadores[]={"Treinador 1","Treinador 2","Treinador 3","Treinador 4"};
 Texture2D retratos[4]={},campo={},logo={},charizardTitulo={},textoTitulo={},chamasTitulo={};
 Texture2D cura={},fortificante={},pokebola={};
 const Color cores[]={{224,91,73,255},{84,153,124,255},{80,129,195,255},{173,104,173,255}};
 bool som=true;
 bool bloqueado=false;
-// A navegação usa os controles desenhados no quadro anterior.
+
 struct ControleTeclado { Rectangle area; bool habilitado; };
 std::vector<ControleTeclado> controlesAnteriores, controlesAtuais;
 Rectangle focoTeclado={};
 bool usandoTeclado=false, confirmarTeclado=false, ativacaoControle=false;
 int contextoTeclado=-1;
 Vector2 ultimoMouse={};
+
 bool mesmaArea(Rectangle a,Rectangle b) {
     return a.x==b.x && a.y==b.y && a.width==b.width && a.height==b.height;
 }
@@ -96,6 +98,7 @@ void navegarTeclado(int contexto,bool digitando) {
     }
     confirmarTeclado=enter;
 }
+
 Font fonteInterface={};
 int larguraTexto(const char* s,int tamanho) {
     return (int)MeasureTextEx(fonteInterface,s,(float)tamanho,0).x;
@@ -103,7 +106,6 @@ int larguraTexto(const char* s,int tamanho) {
 void texto(const string& s,int x,int y,int tam,Color cor=INK) {
     DrawTextEx(fonteInterface,s.c_str(),Vector2{(float)x,(float)y},(float)tam,0,cor);
 }
-// Quebra as mensagens do modelo em linhas dentro da caixa disponível.
 void textoEmCaixa(const string& mensagem,int x,int y,int largura,int altura,int tamanho,Color cor) {
     std::vector<string> linhas;
     do {
@@ -137,7 +139,6 @@ bool botao(Rectangle r,const string& s,bool habilitado=true,bool marcado=false) 
     DrawRectangleRoundedLinesEx(r,0.18f,4,2,INK);
     int tam=18;
     while(tam>12 && larguraTexto(s.c_str(),tam)>r.width-16) tam--;
-    // Centraliza a parte visível das letras, incluindo os acentos.
     float topo=(float)fonteInterface.baseSize, base=0;
     for(const char* letra=s.c_str();*letra;) {
         int bytes=0;
@@ -154,7 +155,6 @@ bool botao(Rectangle r,const string& s,bool habilitado=true,bool marcado=false) 
     texto(s,(int)std::round(r.x+(r.width-larguraTexto(s.c_str(),tam))/2),y,tam,marcado?WHITE:INK);
     return ativacaoControle;
 }
-// Molduras e cursor em pixels para a caixa de ações da batalha.
 void molduraBatalha(int x,int y,int largura,int altura,Color preenchimento) {
     DrawRectangle(x,y,largura,altura,INK);
     DrawRectangle(x+4,y+4,largura-8,altura-8,Color{236,224,182,255});
@@ -179,9 +179,7 @@ bool opcaoBatalha(Rectangle r,const string& rotulo,bool selecionada=false,bool h
 Rectangle posicaoOpcao(int indice) {
     return Rectangle{562.f+(indice%2)*192,466.f+(indice/2)*82,186,66};
 }
-
 void celebracaoVitoria(float tempo) {
-    // Queda contínua, com balanço, rotação e pequenas viradas de cada papel.
     const Color paleta[]={AMBAR,TEAL,Color{224,131,115,255},Color{244,204,126,255}};
     for(int i=0;i<56;i++) {
         float velocidade=42.f+(i*17)%47;
@@ -197,7 +195,6 @@ void celebracaoVitoria(float tempo) {
         DrawRectanglePro(Rectangle{x,y,largura,altura},Vector2{largura/2,altura/2},giro,cor);
     }
 }
-
 void fundo(Tela tela) {
     switch(tela) {
         case INICIO:
@@ -226,7 +223,6 @@ void fundo(Tela tela) {
             break;
         case COMBATE:
             ClearBackground(INK);
-            // O campo original e desenhado exclusivamente na tela de combate.
             break;
     }
 }
@@ -234,15 +230,11 @@ void retrato(int id,int x,int y,int escala=4) {
     float fator=escala*.5f;
     DrawTextureEx(retratos[id],Vector2{(float)x-16,(float)y-4},0,fator,WHITE);
 }
-// Leituras seguras para a apresentação. Não executam regras nem criam objetos de domínio.
+
 template<class T, class Consulta>
 void consultar(Consulta consulta, T& valor, bool* disponivel=nullptr) {
-    try {
-        valor = consulta();
-        if (disponivel) *disponivel = true;
-    } catch (const FuncaoNaoImplementada&) {
-        if (disponivel) *disponivel = false;
-    }
+    try { valor = consulta(); if (disponivel) *disponivel = true;
+    } catch (const FuncaoNaoImplementada&) { if (disponivel) *disponivel = false; }
 }
 
 struct GolpeVisual {
@@ -268,16 +260,13 @@ struct ItemVisual {
         if (i) consultar([&] { return i->getNome(); }, nome);
 #endif
     }
-    string getNome() const {
-        return nome.empty()?"??":nome;
-    }
+    string getNome() const { return nome.empty()?"??":nome; }
 };
 struct PokemonVisual {
     Pokemon* objeto = nullptr;
     string nome, tipo;
     int idPokemon = -1, vida = 0, maxima = 0, ataque = 0, defesa = 0;
-    bool temAtaque = false, temDefesa = false;
-    bool temIdPokemon = false, temVida = false, temMaxima = false, morto = false;
+    bool temAtaque = false, temDefesa = false, temIdPokemon = false, temVida = false, temMaxima = false, morto = false;
     GolpeVisual golpes[2];
     bool golpeConsultado[2] = {};
     void ler(Pokemon* p) {
@@ -345,7 +334,7 @@ struct TreinadorVisual {
 #endif
     }
     string getNome() const { return nome.empty()?"??":nome; }
-    int getIndiceAtivo() const { return temAtivo ? ativo : 0; } // Só índice gráfico seguro; não altera o modelo.
+    int getIndiceAtivo() const { return temAtivo ? ativo : 0; }
     bool perdeu() const { return derrotado; }
     PokemonVisual* getAtivo() { return &atual; }
     PokemonVisual* getPokemon(int i) { return &equipe[i]; }
@@ -398,6 +387,7 @@ void painel(PokemonVisual* p,int x,int y,float hp) {
     string maxima=p->temMaxima?std::to_string(p->getVidaMaxima()):"??";
     texto(atual+" / "+maxima,x+212,y+76,12);
 }
+
 enum Efeito { NENHUM, ATAQUE, CURA, FORCA, TROCA };
 struct Animacao {
     Efeito efeito=NENHUM;
@@ -407,6 +397,7 @@ struct Animacao {
     bool ativa() const { return efeito!=NENHUM; }
     void iniciar(Efeito e,int a,int i,int dest,int j) { efeito=e; acao=a; indice=i; alvo=dest; jogador=j; tempo=0; aplicada=false; duracao=1.6f; instanteImpacto=.65f; }
 };
+
 void quadro(Texture2D tex,int largura,int altura,int frame,Vector2 pos,float escala=3,float rotacao=0,Color tint=WHITE) {
     int colunas=tex.width/largura, total=colunas*(tex.height/altura);
     if(total<1) return;
@@ -414,6 +405,7 @@ void quadro(Texture2D tex,int largura,int altura,int frame,Vector2 pos,float esc
     Rectangle origem={(float)(frame%colunas*largura),(float)(frame/colunas*altura),(float)largura,(float)altura};
     DrawTexturePro(tex,origem,Rectangle{pos.x,pos.y,largura*escala,altura*escala},Vector2{largura*escala/2,altura*escala/2},rotacao,tint);
 }
+
 void efeitoGolpe(Efeito efeito,Vector2 alvo,float t) {
     if(efeito==CURA || efeito==FORCA) {
         Texture2D sprite=efeito==FORCA?fortificante:cura;
@@ -423,25 +415,25 @@ void efeitoGolpe(Efeito efeito,Vector2 alvo,float t) {
             quadro(sprite,16,16,(int)(q*4),Vector2{alvo.x+std::sin(i*2.4f)*66,alvo.y+55-q*130},3,0,Fade(cor,std::sin(q*PI)));
         }
     }
-
 }
 
-// Estado gráfico privado: a main só precisa conhecer Acao e Batalha.
 bool audio = false;
 Music musicas[3] = {};
 int faixa = -1;
-Texture2D frente[TOTAL_POKEMON] = {}, costas[TOTAL_POKEMON] = {};
-Rectangle limitesCostas[TOTAL_POKEMON] = {};
+
+// O SEGREDO DOS BOUNDING BOXES REAIS
+std::vector<Texture2D> frente, costas;
+std::vector<Rectangle> limitesFrente, limitesCostas;
+
 const float loopInicio[] = {10.151383f, 25.209569f, 2.077800f};
 const float loopFim[] = {51.457800f, 107.804580f, 16.214263f};
-// Estado da partida e escolhas dos jogadores.
 Tela tela=INICIO;
 int perfil[2]={0,1}, jogador=0,menu=0;
 int paginaEquipe[2]={0,0};
 string nome[2]={"",""};
 std::vector<int> escolhas[2];
-float saltoSelecao[2][TOTAL_POKEMON]={};
-float destaqueSelecao[TOTAL_POKEMON]={};
+std::vector<float> saltoSelecao[2];
+std::vector<float> destaqueSelecao;
 Animacao anim;
 float vidas[2][3]={};
 bool vidasConhecidas[2][3]={};
@@ -471,12 +463,14 @@ void reiniciarInterface() {
 }
 
 }
-// Inicialização da janela, áudio e imagens.
+
 bool iniciarInterface() {
     InitWindow(960,640,"Pokémon POO | Programação Orientada a Objetos");
     if(!IsWindowReady()) return false;
+    
     SetTargetFPS(60);
     SetExitKey(KEY_NULL);
+    
     if(!DirectoryExists("assets")) {
         if(DirectoryExists("lib/assets")) {
             if(!ChangeDirectory("lib")) { CloseWindow(); return false; }
@@ -485,13 +479,43 @@ bool iniciarInterface() {
             if(DirectoryExists("../assets") && !ChangeDirectory("..")) { CloseWindow(); return false; }
         }
     }
-    // Inclui os caracteres acentuados usados nos textos em português.
+    
     int caracteres[224];
     for(int i=0;i<224;i++) caracteres[i]=32+i;
     fonteInterface=LoadFontEx("assets/fontes/Pokemon Classic.ttf",32,caracteres,224);
     SetTextureFilter(fonteInterface.texture,TEXTURE_FILTER_BILINEAR);
     InitAudioDevice();
     audio=IsAudioDeviceReady();
+    
+    std::ifstream arquivo("pokemons.txt");
+    if (!arquivo.is_open()) arquivo.open("../pokemons.txt"); 
+
+    if (arquivo.is_open()) {
+        int id, vida, atk, def;
+        string tipo, nome;
+        while (arquivo >> id >> tipo >> nome >> vida >> atk >> def) {
+            nomes.push_back(nome);
+            ataquesCatalogo.push_back(atk);
+            defesasCatalogo.push_back(def);
+            for (char &c : tipo) c = toupper(c);
+            if (tipo == "AGUA") tipo = "ÁGUA";
+            if (tipo == "ELETRICO") tipo = "ELÉTRICO";
+            tipos.push_back(tipo);
+        }
+        TOTAL_POKEMON = nomes.size();
+    } else {
+        TOTAL_POKEMON = 0; 
+    }
+
+    frente.resize(TOTAL_POKEMON);
+    costas.resize(TOTAL_POKEMON);
+    limitesFrente.resize(TOTAL_POKEMON);
+    limitesCostas.resize(TOTAL_POKEMON);
+    
+    saltoSelecao[0].resize(TOTAL_POKEMON, -10.0f);
+    saltoSelecao[1].resize(TOTAL_POKEMON, -10.0f);
+    destaqueSelecao.resize(TOTAL_POKEMON, 0.0f);
+
     const char* faixas[]={"assets/audio/inicio.ogg","assets/audio/batalha.ogg","assets/audio/vitoria.ogg"};
     if(audio) for(int i=0;i<3;i++) { musicas[i]=LoadMusicStream(faixas[i]); musicas[i].looping=true; SetMusicVolume(musicas[i],.32f); }
     auto carregar=[](const char* nome) { Texture2D t=LoadTexture(TextFormat("assets/frlg/%s.png",nome)); SetTextureFilter(t,TEXTURE_FILTER_POINT); return t; };
@@ -500,7 +524,6 @@ bool iniciarInterface() {
     campo=carregar("campo"); logo=carregar("logo"); charizardTitulo=carregar("charizard_title"); textoTitulo=carregar("title_text"); chamasTitulo=carregar("title_flames");
     cura=carregar("green_sparkle"); pokebola=carregar("pokeball");
     Image brilho=LoadImage("assets/frlg/green_sparkle.png");
-    // Grayscale descartava o canal alpha e desenhava retangulos opacos.
     ImageFormat(&brilho,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
     Color* pixels=static_cast<Color*>(brilho.data);
     for(int i=0;i<brilho.width*brilho.height;i++) {
@@ -510,45 +533,42 @@ bool iniciarInterface() {
     fortificante=LoadTextureFromImage(brilho);
     UnloadImage(brilho);
     SetTextureFilter(fortificante,TEXTURE_FILTER_POINT);
+    
     for(int i=0;i<TOTAL_POKEMON;i++) {
-        frente[i]=LoadTexture(TextFormat("assets/%i-frente.png",i));
-        costas[i]=LoadTexture(TextFormat("assets/%i-costas.png",i));
+        frente[i] = LoadTexture(TextFormat("assets/%i-frente.png",i));
+        costas[i] = LoadTexture(TextFormat("assets/%i-costas.png",i));
         SetTextureFilter(frente[i],TEXTURE_FILTER_POINT);
         SetTextureFilter(costas[i],TEXTURE_FILTER_POINT);
-        Image imagemCostas=LoadImage(TextFormat("assets/%i-costas.png",i));
-        limitesCostas[i]=GetImageAlphaBorder(imagemCostas,.1f);
-        UnloadImage(imagemCostas);
+        
+        // CALCULA A CAIXA DE COLISÃO REAL DA IMAGEM, IGNORANDO O FUNDO TRANSPARENTE
+        Image imgF = LoadImage(TextFormat("assets/%i-frente.png",i));
+        limitesFrente[i] = GetImageAlphaBorder(imgF, 0.1f);
+        if (limitesFrente[i].height <= 0) limitesFrente[i] = {0, 0, (float)frente[i].width, (float)frente[i].height};
+        UnloadImage(imgF);
+        
+        Image imgC = LoadImage(TextFormat("assets/%i-costas.png",i));
+        limitesCostas[i] = GetImageAlphaBorder(imgC, 0.1f);
+        if (limitesCostas[i].height <= 0) limitesCostas[i] = {0, 0, (float)costas[i].width, (float)costas[i].height};
+        UnloadImage(imgC);
     }
     return true;
 }
 
-bool interfaceAberta() {
-    return !WindowShouldClose() && !sair;
-}
-
-std::string getNomeEscolhido(int jogador) {
-    return nome[jogador];
-}
-
-int* getEquipeEscolhida(int jogador) {
-    return escolhas[jogador].data();
-}
+bool interfaceAberta() { return !WindowShouldClose() && !sair; }
+std::string getNomeEscolhido(int jogador) { return nome[jogador]; }
+int* getEquipeEscolhida(int jogador) { return escolhas[jogador].data(); }
 
 void mostrarCombate() {
     tela=COMBATE; menu=0; anim=Animacao();
     for (int j=0;j<2;j++) for (int i=0;i<3;i++) vidasConhecidas[j][i]=false;
 }
-void mostrarResultado(bool sucesso) {
-    if (!sucesso) anim=Animacao();
-}
+void mostrarResultado(bool sucesso) { if (!sucesso) anim=Animacao(); }
 
-// Atualiza um único quadro. A main controla a repetição e executa as ações.
 Acao atualizarInterface(Batalha* modelo) {
     BatalhaVisual visao(modelo);
     BatalhaVisual* batalha=&visao;
     Acao acao;
-    // A ação é executada pela main depois do quadro anterior. Esta checagem
-    // também cobre um quadro lento que tenha encerrado a animação no impacto.
+    
     if (tela == COMBATE && batalha && batalha->terminou() && !anim.ativa()) {
         tela = VITORIA;
     }
@@ -563,11 +583,10 @@ Acao atualizarInterface(Batalha* modelo) {
     bool digitandoNome=tela==TREINADORES && (editando ||
         (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(),Rectangle{280,411,400,48})));
     if(!digitandoNome && IsKeyPressed(KEY_M)) som=!som;
-    // A ação é aplicada no instante de impacto da animação.
+    
     if(tela==COMBATE && anim.ativa()) {
         anim.tempo+=dt;
         if(anim.tempo>=anim.instanteImpacto && !anim.aplicada) {
-            // Entrega a ação à main no instante de impacto da animação.
             acao.tipo = anim.acao==0 ? ATACAR : (anim.acao==1 ? USAR_ITEM : TROCAR);
             acao.indice = anim.indice;
             acao.alvo = anim.alvo;
@@ -577,6 +596,7 @@ Acao atualizarInterface(Batalha* modelo) {
             anim.duracao=std::max(anim.duracao,anim.instanteImpacto+1.f);
         if(anim.tempo>=anim.duracao) { anim.efeito=NENHUM; menu=0; if(batalha->terminou()) tela=VITORIA; }
     }
+    
     for(int j=0;j<2;j++) for(int i=0;i<3;i++) {
         PokemonVisual* p=batalha->getTreinador(j).getPokemon(i);
         if (!p->temVida) continue;
@@ -585,6 +605,7 @@ Acao atualizarInterface(Batalha* modelo) {
         else vidas[j][i]+=(destino-vidas[j][i])*std::min(1.f,dt*8);
         if(std::fabs(vidas[j][i]-destino)<.1f) vidas[j][i]=destino;
     }
+    
     bloqueado=anim.ativa();
     bool sairPorEscape=tela==INICIO && IsKeyPressed(KEY_ESCAPE);
     bool encerrouEdicao=false;
@@ -596,16 +617,15 @@ Acao atualizarInterface(Batalha* modelo) {
         if(tela==TREINADORES) { if(jogador==1) jogador=0; else tela=INICIO; }
         else if(tela==EQUIPE) { if(jogador==1) jogador=0; else { tela=TREINADORES; jogador=1; } }
         else if(tela==COMBATE && !batalha->precisaTrocar()) {
-            if(menu) menu=0;
-            else { acao.tipo=ENCERRAR_BATALHA; reiniciarInterface(); }
+            if(menu) menu=0; else { acao.tipo=ENCERRAR_BATALHA; reiniciarInterface(); }
         } else if(tela==VITORIA) { acao.tipo=ENCERRAR_BATALHA; reiniciarInterface(); }
     }
     if(tela==COMBATE && batalha->precisaTrocar() && !anim.ativa()) menu=2;
+    
     BeginDrawing(); fundo(tela);
     int contexto=(int)tela+100*menu+1000*jogador+10000*paginaEquipe[jogador];
     navegarTeclado(contexto,editando || encerrouEdicao || anim.ativa());
 
-    // Menu inicial.
     if(tela==INICIO) {
         DrawTextureEx(logo,Vector2{(960-logo.width*2.f)/2,20},0,2,WHITE);
         centro("Universidade Federal de Viçosa",246,22,TEAL);
@@ -614,13 +634,11 @@ Acao atualizarInterface(Batalha* modelo) {
         texto("Trabalho 02 - INF 112",88,334,24,TEAL);
         texto("PROGRAMAÇÃO II - 2026/2",88,370,15,INK);
         bool iniciar=botao(Rectangle{88,398,360,58},"JOGAR");
-        if(iniciar) {
-            tela=TREINADORES; jogador=0; escolhas[0].clear(); escolhas[1].clear();
-        }
+        if(iniciar) { tela=TREINADORES; jogador=0; escolhas[0].clear(); escolhas[1].clear(); }
         if(botao(Rectangle{88,474,360,46},"SAIR") || sairPorEscape) sair=true;
         centro("Setas: navegar   Enter/Espaço: escolher   Esc: voltar",576,14,INK);
         centro("Tab/Shift+Tab: alternar opções   M: som   Mouse: clicar",604,13,TEAL);
-    // Seleção do perfil e nome de cada treinador.
+        
     } else if(tela==TREINADORES) {
         centro("ESCOLHA SEU TREINADOR",38,36);
         centro("Jogador "+std::to_string(jogador+1)+" / 2",88,20,TEAL);
@@ -657,7 +675,7 @@ Acao atualizarInterface(Batalha* modelo) {
             editando=false;
             if(jogador==0) jogador=1; else { tela=EQUIPE; jogador=0; }
         }
-    // Montagem das equipes antes de criar a batalha.
+        
     } else if(tela==EQUIPE) {
         centro("MONTE SUA EQUIPE",30,36);
         centro(nome[jogador]+" - escolha 3 Pokémon ("+std::to_string(escolhas[jogador].size())+"/3)",76,20,TEAL);
@@ -672,11 +690,24 @@ Acao atualizarInterface(Batalha* modelo) {
             Rectangle card={(float)x,(float)y,220,158};
             bool hover=CheckCollisionPointRec(GetMousePosition(),card);
             destaqueSelecao[i]+=(float(hover)-destaqueSelecao[i])*std::min(1.f,dt*12);
-            float escala=1.2f+.12f*destaqueSelecao[i];
-            float t=agora-saltoSelecao[jogador][i];
-            float salto=(t>=0 && t<.4f)?8*std::sin(t/.4f*PI):0;
-            DrawRectangleRounded(card,.1f,4,marcado?Fade(TEAL,.25f):PAPER);
-            DrawTextureEx(frente[i],Vector2{x+(220-frente[i].width*escala)/2,y+93-frente[i].height*escala-salto},0,escala,WHITE);
+            
+            DrawRectangleRounded(card, .1f, 4, marcado ? Fade(TEAL, .25f) : PAPER);
+            
+            // CENTRAGEM PERFEITA COM BOUNDING BOX
+            Rectangle limite = limitesFrente[i];
+            float baseEscala = 68.0f / limite.height; 
+            float escala = baseEscala + 0.05f * destaqueSelecao[i];
+            float t = agora - saltoSelecao[jogador][i];
+            float salto = (t >= 0 && t < .4f) ? 8 * std::sin(t / .4f * PI) : 0;
+            
+            float centroRealX = limite.x + limite.width / 2.0f;
+            float centroRealY = limite.y + limite.height / 2.0f;
+            
+            float destX = x + 110.0f - (centroRealX * escala);
+            float destY = y + 70.0f - (centroRealY * escala) - salto;
+            
+            DrawTextureEx(frente[i], Vector2{destX, destY}, 0, escala, WHITE);
+            
             texto(tipos[i],x+12,y+10,12,TEAL);
             texto(TextFormat("ATK: %i",ataquesCatalogo[i]),x+14,y+98,13,Color{38,100,182,255});
             texto(TextFormat("DEF: %i",defesasCatalogo[i]),x+122,y+98,13,Color{181,55,54,255});
@@ -702,11 +733,9 @@ Acao atualizarInterface(Batalha* modelo) {
         if(botao(Rectangle{48,584,200,42},"VOLTAR")) { if(jogador==1) jogador=0; else { tela=TREINADORES; jogador=1; } }
         if(botao(Rectangle{600,584,310,42},jogador==0?"EQUIPE DO JOGADOR 2":"ENTRAR NA ARENA",escolhas[jogador].size()==3)) {
             if(jogador==0) jogador=1;
-            else {
-                acao.tipo = INICIAR_BATALHA;
-            }
+            else acao.tipo = INICIAR_BATALHA;
         }
-    // Exibição do combate e dos menus de ataque, item e troca.
+        
     } else if(tela==COMBATE) {
         int turno=anim.ativa()?anim.jogador:batalha->getTurno();
         TreinadorVisual& t=batalha->getTreinador(turno);
@@ -715,63 +744,66 @@ Acao atualizarInterface(Batalha* modelo) {
         TreinadorVisual& superior=batalha->getTreinador(1);
         PokemonVisual* baixo=inferior.getAtivo();
         PokemonVisual* cima=superior.getAtivo();
+        
         DrawTexturePro(campo,Rectangle{0,0,240,110},Rectangle{0,0,960,440},Vector2{0,0},0,WHITE);
-        // Os sprites de costas têm a base aberta: ela encontra o limite do campo.
-        const float chaoInferior=440;
-        Vector2 pa={220,chaoInferior},pb={624,78};
+        
+        Vector2 centroSombraAliado = {240, 430};
+        Vector2 centroSombraInimigo = {690, 220};
+        
         if(anim.ativa() && anim.efeito==ATAQUE) {
             float fase=std::min(1.f,anim.tempo/.42f);
             float avanco=std::sin(fase*PI);
-            if(turno==0) pa.x+=28*avanco;
-            else pb.x-=28*avanco;
+            if(turno==0) centroSombraAliado.x+=28*avanco;
+            else centroSombraInimigo.x-=28*avanco;
         }
         bool impacto=anim.ativa() && anim.efeito==ATAQUE && anim.tempo>anim.instanteImpacto && anim.tempo<anim.instanteImpacto+.35f;
         if(impacto) {
             float tremor=std::sin(anim.tempo*85)*4;
-            if(turno==0) pb.x+=tremor; else pa.x+=tremor;
+            if(turno==0) centroSombraInimigo.x+=tremor; else centroSombraAliado.x+=tremor;
         }
         bool piscar=impacto && (int)(anim.tempo*20)%2;
-        auto desenharPokemon=[&](PokemonVisual* p,Texture2D sprite,Vector2 pos,float escala,int lado) {
+        
+        auto desenharPokemon=[&](PokemonVisual* p,Texture2D sprite, Rectangle limite, Vector2 posChao,float escala,int lado) {
             bool trocando=anim.ativa() && anim.efeito==TROCA && anim.jogador==lado;
             bool desmaiando=p->derrotado() && anim.ativa() && anim.efeito==ATAQUE && anim.jogador!=lado;
             float queda=desmaiando?std::max(0.f,std::min(1.f,(anim.tempo-anim.instanteImpacto-.15f)/.65f)):0;
             float suavidade=queda*queda*(3-2*queda);
             if(piscar && turno!=lado && !desmaiando) return;
-            // O derrotado desaparece nesta ação e permanece oculto durante a troca.
+            
             bool mostrarSprite=!p->derrotado() || (desmaiando && queda<1);
             float tamanho=1;
             Color cor=p->temIdPokemon?WHITE:BLACK;
-            if(desmaiando) {
-                pos.y+=32*suavidade;
-                cor=Fade(cor,1-suavidade);
-            }
+            if(desmaiando) { posChao.y+=32*suavidade; cor=Fade(cor,1-suavidade); }
             if(trocando) {
-                if(anim.tempo<.45f) {
-                    tamanho=1-anim.tempo/.45f;
-                    if (p->temIdPokemon) cor=Color{255,130,150,255};
-                } else if(anim.tempo<1.05f) tamanho=0;
+                if(anim.tempo<.45f) { tamanho=1-anim.tempo/.45f; if (p->temIdPokemon) cor=Color{255,130,150,255}; }
+                else if(anim.tempo<1.05f) tamanho=0;
                 else tamanho=std::min(1.f,(anim.tempo-1.05f)/.35f);
             }
-            if(mostrarSprite && tamanho>.01f) {
-                Rectangle origem={0,0,(float)sprite.width,(float)sprite.height};
-                float escalaAtual=escala*tamanho;
-                if(lado==0) {
-                    // O chão é a âncora do sprite, desconsiderando as bordas transparentes.
-                    Rectangle limite=limitesCostas[p->temIdPokemon?p->getIdPokemon():3];
-                    if(limite.height<=0) limite=origem;
-                    DrawEllipse((int)pos.x,(int)chaoInferior,58*tamanho,7*tamanho,Fade(INK,.12f*tamanho*(1-suavidade)));
-                    Rectangle dest={pos.x-(limite.x+limite.width/2)*escalaAtual,
-                        pos.y-(limite.y+limite.height)*escalaAtual,
-                        sprite.width*escalaAtual,sprite.height*escalaAtual};
-                    DrawTexturePro(sprite,origem,dest,Vector2{0,0},0,cor);
-                } else {
-                    Vector2 centro={pos.x+sprite.width*escala/2,pos.y+sprite.height*escala/2};
-                    Rectangle dest={centro.x,centro.y,sprite.width*escalaAtual,sprite.height*escalaAtual};
-                    DrawTexturePro(sprite,origem,dest,Vector2{dest.width/2,dest.height/2},0,cor);
-                }
+            
+            if (mostrarSprite && tamanho > .01f) {
+                // Sombra Fixa Exata
+                if (lado == 0) DrawEllipse((int)posChao.x, (int)posChao.y, 65 * tamanho, 12 * tamanho, Fade(INK, .2f * tamanho * (1 - suavidade)));
+                else DrawEllipse((int)posChao.x, (int)posChao.y, 50 * tamanho, 9 * tamanho, Fade(INK, .2f * tamanho * (1 - suavidade)));
+
+                float escalaAtual = escala * tamanho;
+                
+                // ANCORAGEM PERFEITA PELO BOUNDING BOX FÍSICO DA IMAGEM
+                float peRealX = limite.x + limite.width / 2.0f;
+                float peRealY = limite.y + limite.height;
+                
+                Rectangle origem = {0, 0, (float)sprite.width, (float)sprite.height};
+                Rectangle dest = {
+                    posChao.x - (peRealX * escalaAtual), 
+                    posChao.y - (peRealY * escalaAtual), 
+                    sprite.width * escalaAtual, 
+                    sprite.height * escalaAtual
+                };
+                
+                DrawTexturePro(sprite, origem, dest, Vector2{0, 0}, 0, cor);
             }
+            
             if(trocando) {
-                Vector2 centro=lado==0?Vector2{220,340}:Vector2{720,175};
+                Vector2 centro = {posChao.x, posChao.y - 60};
                 if(anim.tempo>.5f && anim.tempo<1.08f) {
                     float q=(anim.tempo-.5f)/.58f;
                     float direcao=lado==0?1.f:-1.f;
@@ -788,18 +820,25 @@ Acao atualizarInterface(Batalha* modelo) {
                 }
             }
         };
-        desenharPokemon(cima,frente[cima->temIdPokemon?cima->getIdPokemon():3],pb,3,1);
-        desenharPokemon(baixo,costas[baixo->temIdPokemon?baixo->getIdPokemon():3],pa,4,0);
+        
+        int silhuetaSegura = TOTAL_POKEMON > 3 ? 3 : 0; 
+        int idCima = cima->temIdPokemon ? cima->getIdPokemon() : silhuetaSegura;
+        int idBaixo = baixo->temIdPokemon ? baixo->getIdPokemon() : silhuetaSegura;
+        
+        desenharPokemon(cima, frente[idCima], limitesFrente[idCima], centroSombraInimigo, 1.8f, 1);
+        desenharPokemon(baixo, costas[idBaixo], limitesCostas[idBaixo], centroSombraAliado, 2.2f, 0);
+        
         painel(cima,45,64,vidas[1][superior.getIndiceAtivo()]);
         painel(baixo,610,322,vidas[0][inferior.getIndiceAtivo()]);
         texto(superior.getNome(),48,34,19,TEAL); texto(inferior.getNome(),612,292,19,TEAL);
+        
         if(anim.ativa()) {
-            Vector2 alvo=turno==0?Vector2{220,340}:Vector2{720,175};
+            Vector2 alvo=turno==0?Vector2{240,370}:Vector2{690,160};
             efeitoGolpe(anim.efeito,alvo,anim.tempo);
         }
+        
         if(batalha->precisaTrocar() && !anim.ativa()) menu=2;
         int menuDesenhado=menu;
-        // A mesma moldura é usada por todas as telas de escolha da batalha.
         molduraBatalha(0,440,548,200,Color{44,76,91,255});
         molduraBatalha(544,440,416,200,PAPER);
         string instrucao=visao.temTurno?"Vez de "+t.getNome():"Vez de ??";
@@ -819,11 +858,9 @@ Acao atualizarInterface(Batalha* modelo) {
             bool bloqueioAcao=bloqueado;
             bloqueado=false;
             if(opcaoBatalha(Rectangle{754,548,186,66},"MENU")) {
-                acao.tipo=ENCERRAR_BATALHA;
-                reiniciarInterface();
+                acao.tipo=ENCERRAR_BATALHA; reiniciarInterface();
             } else bloqueado=bloqueioAcao;
         }
-        // Os submenus usam a mesma grade, preenchida apenas com dados das classes.
         if(menuDesenhado==1) {
             for(int i=0;i<2;i++) {
                 GolpeVisual* g=a->getGolpe(i);
@@ -841,8 +878,7 @@ Acao atualizarInterface(Batalha* modelo) {
                 string vida="PV "+(p->temVida?std::to_string(p->getVida()):"??")+" / "+(p->temMaxima?std::to_string(p->getVidaMaxima()):"??");
                 if(opcaoBatalha(posicaoOpcao(i),p->getNome(),false,valido,vida)) {
                     anim.iniciar(TROCA,2,i,i,turno);
-                    anim.duracao=1.8f;
-                    break;
+                    anim.duracao=1.8f; break;
                 }
             }
         } else if(menuDesenhado==3) {
@@ -856,6 +892,7 @@ Acao atualizarInterface(Batalha* modelo) {
             }
         }
         if(menuDesenhado && opcaoBatalha(posicaoOpcao(3),"VOLTAR",false,!batalha->precisaTrocar())) menu=0;
+        
     } else if(tela==VITORIA) {
         bloqueado=false;
         int vencedor=batalha->getTreinador(0).perdeu()?1:0;
@@ -870,19 +907,35 @@ Acao atualizarInterface(Batalha* modelo) {
         DrawEllipse(480,326,72,10,Fade(INK,.10f));
         retrato(perfil[vencedor],432,205,4);
         centro("EQUIPE VENCEDORA",340,13,TEAL);
+        
         for(int i=0;i<3;i++) {
             PokemonVisual* p=batalha->getTreinador(vencedor).getPokemon(i);
             float x=154.f+i*224;
+            
             DrawRectangleRounded(Rectangle{x+3,366,204,132},.08f,4,Fade(INK,.07f));
             DrawRectangleRounded(Rectangle{x,362,204,132},.08f,4,Color{255,253,241,255});
             DrawRectangleRoundedLinesEx(Rectangle{x,362,204,132},.08f,4,1,Color{213,199,157,255});
+            
             string nomePokemon=p->getNome();
             int tamanho=16;
             while(tamanho>12 && larguraTexto(nomePokemon.c_str(),tamanho)>180) tamanho--;
-            texto(nomePokemon,(int)(x+(204-larguraTexto(nomePokemon.c_str(),tamanho))/2),376,tamanho,TEAL);
-            Texture2D sprite=frente[p->temIdPokemon?p->getIdPokemon():3];
-            float escala=1.45f;
-            DrawTextureEx(sprite,Vector2{x+(204-sprite.width*escala)/2,391+std::sin(agora*2+i)*3},0,escala,p->temIdPokemon?WHITE:BLACK);
+            texto(nomePokemon,(int)(x+(204-larguraTexto(nomePokemon.c_str(),tamanho))/2),370,tamanho,TEAL);
+            
+            int silhuetaSegura = TOTAL_POKEMON > 3 ? 3 : 0;
+            Texture2D sprite = frente[p->temIdPokemon ? p->getIdPokemon() : silhuetaSegura];
+            Rectangle limite = limitesFrente[p->temIdPokemon ? p->getIdPokemon() : silhuetaSegura];
+            
+            // ESCALA E ANCORAGEM PERFEITAS COM BOUNDING BOX
+            float escala = 80.0f / limite.height;
+            float saltoAnimacao = std::sin(agora * 2 + i) * 3;
+            
+            float peRealX = limite.x + limite.width / 2.0f;
+            float peRealY = limite.y + limite.height;
+            
+            float posX = (x + 102.0f) - (peRealX * escala);
+            float posY = 485.0f - (peRealY * escala) + saltoAnimacao;
+            
+            DrawTextureEx(sprite, Vector2{posX, posY}, 0, escala, p->temIdPokemon ? WHITE : BLACK);
         }
         textoEmCaixa(visao.getMensagem(),28,591,904,44,14,INK);
         if(botao(Rectangle{110,525,340,55},"JOGAR NOVAMENTE",true,true)) { acao.tipo=ENCERRAR_BATALHA; escolhas[0].clear(); escolhas[1].clear(); jogador=0; tela=TREINADORES; }
