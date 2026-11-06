@@ -15,6 +15,7 @@ PokemonEletrico::PokemonEletrico(string nome, int idPokemon, int vida, int ataqu
         definirGolpe(1, new GolpeDano("Explosão", 60)); // Puro dano altíssimo
         
     } else {
+        //magnimite
         definirGolpe(0, new GolpeDano("Raio", 35));
         definirGolpe(1, new GolpeReducaoAtaque("Clarão", 10));
     }

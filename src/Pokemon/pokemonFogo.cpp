@@ -20,9 +20,9 @@ PokemonFogo::PokemonFogo(string nome, int idPokemon, int vida, int ataque, int d
         definirGolpe(1, new GolpeDano("Mordida", 30)); 
         
     } else {
-        // Moveset padrão caso seja um Pokémon de Fogo desconhecido
-        //definirGolpe(0, new GolpeDano("Brasa", 30));
-        //(1, new GolpeReducaoAtaque("Fumaça", 5));
+        //Moveset padrão caso seja um Pokémon de Fogo desconhecido -> ponyta
+        definirGolpe(0, new GolpeDano("Brasa", 30));
+        (1, new GolpeReducaoAtaque("Fumaça", 5));
     }
 }
 
