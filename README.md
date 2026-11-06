@@ -90,7 +90,6 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
 ## 🖼️ Demonstração Visual
 
 <div align="center">
-  <i>(Substitua os links abaixo pelas screenshots reais do seu jogo rodando)</i>
   <br><br>
   <table>
     <tr>
