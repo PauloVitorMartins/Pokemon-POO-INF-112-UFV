@@ -9,7 +9,7 @@ class GolpeReducaoAtaque:public Golpe {
 
     public:
         GolpeReducaoAtaque(string name, int power);
-        string aplicar(Pokemon& attacker, Pokemon& targer);
+        string aplicar(Pokemon& attacker, Pokemon& target);
 };
 
 #endif

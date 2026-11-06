@@ -3,9 +3,9 @@
 
 #include "item.hpp"
 
-class Fortficante:public Item {
+class Fortificante:public Item {
     public:
-        Fortficante();
+        Fortificante();
         bool usar(Pokemon& target) override;
 };
 

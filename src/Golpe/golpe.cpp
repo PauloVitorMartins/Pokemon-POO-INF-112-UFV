@@ -1,5 +1,8 @@
 #include "golpe.hpp"
 
+Golpe::Golpe(string name) { nome = name; }
+Golpe::~Golpe() {}
+
 int Golpe::calcularDano(Pokemon& attacker, Pokemon& target, int poder) {
     //calcula o dano base com base no poder do ataque e atributos de ataque e defesa do pokemon
     int danoBase = std::max(1, poder + attacker.getAtaque() - target.getDefesa());

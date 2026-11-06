@@ -9,11 +9,11 @@ string GolpeReducaoAtaque::aplicar (Pokemon& attacker, Pokemon& target) {
     int danoEfetivo = target.perderVida(dano);
 
     if (target.derrotado()) {
-    return ("O pokemon " + attacker.getNome() + " usou o golpe  " + getNome() + " e infligiu " + 
+    return ("O pokemon " + attacker.getNome() + " usou o golpe " + getNome() + " e infligiu " + 
     std::to_string(danoEfetivo) + " de dano no adversario " + target.getNome() + ".");
     } else {
         target.reduzirAtaque(8);
-        return ("O pokemon " + attacker.getNome() + " usou o golpe  " + getNome() + " e infligiu " + 
+        return ("O pokemon " + attacker.getNome() + " usou o golpe " + getNome() + " e infligiu " + 
         std::to_string(danoEfetivo) + " de dano no adversario " + target.getNome() + ". Além disso, o alvo perdeu " + "8 pontos de ataque.");
     }
 }
