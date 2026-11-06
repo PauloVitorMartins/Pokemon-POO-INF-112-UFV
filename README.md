@@ -1,3 +1,9 @@
+
+
+https://github.com/user-attachments/assets/66407156-ca5f-467e-9f19-477f462583fd
+
+
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/6.gif" alt="Charizard" width="80">
   <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" alt="Pokeball" width="40" style="margin: 0 30px;">
@@ -88,15 +94,6 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
 <br>
 
 ## 🖼️ Galeria
-
-### 🎬 Vídeo de Demonstração
-<!-- Substitua o link da imagem e do href pelo seu vídeo ou GIF de gameplay -->
-<div align="center">
-  <a href="#">
-    <img src="https://via.placeholder.com/600x338/222222/ffffff?text=Clique+aqui+para+inserir+o+seu+GIF+ou+Video" alt="Vídeo Gameplay" style="border-radius: 8px;">
-  </a>
-</div>
-
 <br>
 
 ### 📸 Imagens do Jogo
