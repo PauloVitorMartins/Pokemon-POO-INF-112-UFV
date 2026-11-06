@@ -87,26 +87,25 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
 </div>
 <br>
 
-## 🖼️ Demonstração Visual
+## 🖼️ Galeria
 
+### 🎬 Vídeo de Demonstração
+<!-- Substitua o link da imagem e do href pelo seu vídeo ou GIF de gameplay -->
 <div align="center">
-  <br><br>
-  <table>
-    <tr>
-      <td align="center"><b>Menu de Batalha</b></td>
-      <td align="center"><b>Seleção de Golpes</b></td>
-    </tr>
-    <tr>
-      <td>
-        <!-- INSIRA O LINK DA SUA IMAGEM AQUI -->
-        <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+1:+Batalha+Inicial" alt="Tela de Batalha" width="400">
-      </td>
-      <td>
-        <!-- INSIRA O LINK DA SUA IMAGEM AQUI -->
-        <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+2:+Menu+de+Ataques" alt="Tela de Ataques" width="400">
-      </td>
-    </tr>
-  </table>
+  <a href="#">
+    <img src="https://via.placeholder.com/600x338/222222/ffffff?text=Clique+aqui+para+inserir+o+seu+GIF+ou+Video" alt="Vídeo Gameplay" style="border-radius: 8px;">
+  </a>
+</div>
+
+<br>
+
+### 📸 Imagens do Jogo
+<!-- Você pode adicionar quantas imagens quiser lado a lado ou em sequência substituindo os links abaixo -->
+<div align="center">
+  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+1" alt="Print 1" width="400" style="margin: 5px; border-radius: 5px;">
+  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+2" alt="Print 2" width="400" style="margin: 5px; border-radius: 5px;">
+  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+3" alt="Print 3" width="400" style="margin: 5px; border-radius: 5px;">
+  <img src="https://via.placeholder.com/400x250/222222/ffffff?text=Screenshot+4" alt="Print 4" width="400" style="margin: 5px; border-radius: 5px;">
 </div>
 
 <br>
@@ -114,6 +113,19 @@ O simulador foi arquitetado utilizando os pilares da Orientação a Objetos. Aba
   <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/miracle-seed.png" width="30">
 </div>
 <br>
+
+## 🛠️ Pré-requisitos e Dependências
+
+Para garantir que o jogo compila corretamente (especialmente a interface gráfica construída em **Raylib**), certifique-se de ter as ferramentas básicas de compilação C++ instaladas no seu sistema.
+
+**Para utilizadores Linux (Ubuntu/Debian/Mint):**
+Se for a primeira vez a rodar o projeto ou der algum erro de dependência gráfica, execute o comando abaixo no terminal para instalar o compilador e as bibliotecas essenciais:
+
+```bash
+sudo apt update
+sudo apt install build-essential git make g++ libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
+
+```
 
 ## 🚀 Como Clonar, Compilar e Rodar
 
