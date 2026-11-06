@@ -1,4 +1,5 @@
 #include "pokemon.hpp"
+#include "golpe.hpp"
 
 Pokemon::Pokemon(string name, int id, int life, int attack, int defense, string type) {
     nome = name; idPokemon = id; vidaMaxima = life; vida = life; ataque = attack; defesa = defense; tipo = type; golpes[0] = nullptr; golpes[1] = nullptr;

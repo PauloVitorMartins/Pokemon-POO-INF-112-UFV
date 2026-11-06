@@ -1,9 +1,9 @@
 #include "fortificante.hpp"
 
-Fortficante::Fortficante() : Item("Fortificante") {
+Fortificante::Fortificante() : Item("Fortificante") {
 
 }
 
-bool Fortficante::usar(Pokemon& target) {
+bool Fortificante::usar(Pokemon& target) {
     return target.fortalecer();
 }

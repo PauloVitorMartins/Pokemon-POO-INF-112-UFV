@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <string>
 
-#include "golpe.hpp"
+class Golpe;
 
 using std::string;
 

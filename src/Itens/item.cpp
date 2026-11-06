@@ -1,9 +1,11 @@
 #include "item.hpp"
 
 Item::Item(string name) {
-    nome = nome;
+    nome = name;
 }
 
 string Item::getNome() {
     return nome;
 }
+
+Item::~Item() {}
