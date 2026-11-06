@@ -124,5 +124,5 @@ Abra o seu terminal e execute exatamente o bloco abaixo:
 ```bash
 git clone [https://github.com/PauloVitorMartins/Pokemon-POO---INF-112-UFV.git](https://github.com/PauloVitorMartins/Pokemon-POO---INF-112-UFV.git)
 cd Pokemon-POO---INF-112-UFV/tp02
-make
+make run
 ./lib/.build/pokemon
