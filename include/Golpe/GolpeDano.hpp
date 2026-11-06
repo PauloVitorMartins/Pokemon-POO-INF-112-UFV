@@ -1,7 +1,7 @@
 #ifndef GOLPE_DANO_HPP
 #define GOLPE_DANO_HPP
 
-#include "golpe.hpp"
+#include "Golpe.hpp"
 
 class GolpeDano:public Golpe {
     private:

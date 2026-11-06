@@ -1,4 +1,4 @@
-#include "golpeDano.hpp"
+#include "GolpeDano.hpp"
 
 GolpeDano::GolpeDano(string name, int power) : Golpe(name) {
     poder = power;

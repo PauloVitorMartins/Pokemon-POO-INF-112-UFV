@@ -1,6 +1,7 @@
 #ifndef POKEMON_PLANTA_HPP
 #define POKEMON_PLANTA_HPP
-#include "pokemon.hpp"
+
+#include "Pokemon.hpp"
 
 class PokemonPlanta:public Pokemon {
     public:

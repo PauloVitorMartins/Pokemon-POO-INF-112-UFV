@@ -1,7 +1,7 @@
 #ifndef GOLPE_HPP
 #define GOLPE_HPP
 
-#include "pokemon.hpp"
+#include "Pokemon.hpp"
 
 
 class Golpe {

@@ -1,4 +1,4 @@
-#include "golpeReducao.hpp"
+#include "GolpeReducao.hpp"
 
 GolpeReducaoAtaque::GolpeReducaoAtaque (string name, int power) : Golpe (name) {
     poder = power;

@@ -1,7 +1,7 @@
 #ifndef FORTIFICANTE_HPP
 #define FORTIFICANTE_HPP
 
-#include "item.hpp"
+#include "Item.hpp"
 
 class Fortificante:public Item {
     public:

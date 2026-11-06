@@ -1,7 +1,7 @@
 #ifndef POKEMON_ELETRICO_HPP
 #define POKEMON_ELETRICO_HPP
 
-#include "pokemon.hpp"
+#include "Pokemon.hpp"
 
 class PokemonEletrico:public Pokemon {
     public:

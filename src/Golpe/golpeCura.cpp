@@ -1,4 +1,4 @@
-#include "golpeCura.hpp"
+#include "GolpeCura.hpp"
 
 GolpeCura::GolpeCura(string name, int power, int quantity):Golpe(name) {
     poder = power; quantidade = quantity;

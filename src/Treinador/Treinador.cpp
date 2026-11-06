@@ -1,14 +1,14 @@
-#include "treinador.hpp"
+#include "Treinador.hpp"
 #include <fstream>
 #include <ostream>
 
-#include "pokemonAgua.hpp"
-#include "pokemonEletrico.hpp"
-#include "pokemonPlanta.hpp"
-#include "pokemonFogo.hpp"
+#include "PokemonAgua.hpp"
+#include "PokemonEletrico.hpp"
+#include "PokemonPlanta.hpp"
+#include "PokemonFogo.hpp"
 
-#include "cura.hpp"
-#include "fortificante.hpp"
+#include "Cura.hpp"
+#include "Fortificante.hpp"
 
 Treinador::Treinador(string name, int pokemons[3]) {
     /* 
@@ -61,7 +61,7 @@ string Treinador::getNome() {
     return nome;
 }
 
-Pokemon* Treinador::getAtivo() {
+Pokemon* Treinador::getAtivo() const {
     return equipe[ativo];
 }
 
@@ -91,7 +91,7 @@ bool Treinador::trocar (int index) {
     }
 }
 
-bool Treinador::perdeu() {
+bool Treinador::perdeu() const {
     for (int i = 0; i < 3; i++) {
         if (!equipe[i]->derrotado()) return false;
     }

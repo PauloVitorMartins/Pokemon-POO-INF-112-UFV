@@ -1,6 +1,7 @@
 #ifndef POKEMON_AGUA_HPP
 #define POKEMON_AGUA_HPP
-#include "pokemon.hpp"
+
+#include "Pokemon.hpp"
 
 class PokemonAgua:public Pokemon {
     public:

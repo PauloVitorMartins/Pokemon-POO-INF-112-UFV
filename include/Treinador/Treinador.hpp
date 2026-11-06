@@ -1,8 +1,8 @@
 #ifndef TREINADOR_HPP
 #define TREINADOR_HPP
 
-#include "pokemon.hpp"
-#include "item.hpp"
+#include "Pokemon.hpp"
+#include "Item.hpp"
 
 class Treinador {
     private:
@@ -16,11 +16,11 @@ class Treinador {
         virtual ~Treinador();
         string getNome();
         Pokemon* getPokemon(int index);
-        Pokemon* getAtivo();
+        Pokemon* getAtivo() const;
         Item* getItem(int index);
         int getIndiceAtivo();
         bool trocar(int index);
-        bool perdeu();
+        bool perdeu() const;
         bool usarItem(int item, int alvo);
 };
 

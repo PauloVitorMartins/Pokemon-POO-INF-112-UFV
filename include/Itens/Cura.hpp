@@ -1,7 +1,7 @@
 #ifndef CURA_HPP
 #define CURA_HPP
 
-#include "item.hpp"
+#include "Item.hpp"
 
 class Cura: public Item {
     public:

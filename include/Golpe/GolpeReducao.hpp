@@ -1,7 +1,7 @@
 #ifndef GOLPE_REDUCAO_ATAQUE
 #define GOLPE_REDUCAO_ATAQUE
 
-#include "golpe.hpp"
+#include "Golpe.hpp"
 
 class GolpeReducaoAtaque:public Golpe {
     private:

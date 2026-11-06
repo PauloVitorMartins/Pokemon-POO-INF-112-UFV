@@ -1,4 +1,4 @@
-#include "golpe.hpp"
+#include "Golpe.hpp"
 
 Golpe::Golpe(string name) { nome = name; }
 Golpe::~Golpe() {}

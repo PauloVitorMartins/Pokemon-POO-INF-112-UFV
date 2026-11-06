@@ -1,6 +1,7 @@
 #ifndef POKEMON_FOGO_HPP
 #define POKEMON_FOGO_HPP
-#include "pokemon.hpp"
+
+#include "Pokemon.hpp"
 
 class PokemonFogo:public Pokemon {
     public:
